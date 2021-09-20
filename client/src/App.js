@@ -20,35 +20,52 @@ const styles = theme => ({
   }
 })
 
-const customers = [
-  {
-    'id': 1,
-    'image': 'https://placeimg.com/64/64/any',
-    'name': '홍길동',
-    'birthday': '210920',
-    'gender': '남자',
-    'job': '대학생'
-  },
-  {
-    'id': 2,
-    'image': 'https://placeimg.com/64/64/2',
-    'name': '기일동',
-    'birthday': '980214',
-    'gender': '여자',
-    'job': '프로그래머'
-  },
-  {
-    'id': 1,
-    'image': 'https://placeimg.com/64/64/3',
-    'name': '호옹길',
-    'birthday': '951212',
-    'gender': '남자',
-    'job': '디자이너'
-  }
+// const customers = [
+//   {
+//     'id': 1,
+//     'image': 'https://placeimg.com/64/64/any',
+//     'name': '홍길동',
+//     'birthday': '210920',
+//     'gender': '남자',
+//     'job': '대학생'
+//   },
+//   {
+//     'id': 2,
+//     'image': 'https://placeimg.com/64/64/2',
+//     'name': '기일동',
+//     'birthday': '980214',
+//     'gender': '여자',
+//     'job': '프로그래머'
+//   },
+//   {
+//     'id': 3,
+//     'image': 'https://placeimg.com/64/64/3',
+//     'name': '호옹길',
+//     'birthday': '951212',
+//     'gender': '남자',
+//     'job': '디자이너'
+//   }
   
-]
+// ]
 
 class App extends Component { // theme 적용하기 위해 class로 바꿈
+  
+  state = {
+    customers: ""
+  }
+
+  componentDidMount() {
+    this.callApi()
+      .then(res => this.setState({ customers: res }))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+  
   render() { // Class로 바꾸면 render함수로 감싸야한다.
     const { classes } = this.props;
     return (
@@ -66,7 +83,7 @@ class App extends Component { // theme 적용하기 위해 class로 바꿈
           </TableHead>
           <TableBody>
             {
-              customers.map(c => { // c로 순회, 한줄로도 작성 가능
+              this.state.customers ? this.state.customers.map(c => { // c로 순회, 한줄로도 작성 가능
                 return (
                   <Customer
                     key={c.id} // map을 사용할 때 key값을 넣어줘야한다.
@@ -78,7 +95,7 @@ class App extends Component { // theme 적용하기 위해 class로 바꿈
                     job={c.job}
                   />
                 )
-              })
+              }) : ""
             }
           </TableBody>
         </Table>
