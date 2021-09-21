@@ -8,6 +8,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
   root: {
@@ -17,44 +18,21 @@ const styles = theme => ({
   },
   table: {
     minWidth: 1080
+  },
+  progress: {
+    margin: theme.spacing.unit*2
   }
 })
-
-// const customers = [
-//   {
-//     'id': 1,
-//     'image': 'https://placeimg.com/64/64/any',
-//     'name': '홍길동',
-//     'birthday': '210920',
-//     'gender': '남자',
-//     'job': '대학생'
-//   },
-//   {
-//     'id': 2,
-//     'image': 'https://placeimg.com/64/64/2',
-//     'name': '기일동',
-//     'birthday': '980214',
-//     'gender': '여자',
-//     'job': '프로그래머'
-//   },
-//   {
-//     'id': 3,
-//     'image': 'https://placeimg.com/64/64/3',
-//     'name': '호옹길',
-//     'birthday': '951212',
-//     'gender': '남자',
-//     'job': '디자이너'
-//   }
-  
-// ]
 
 class App extends Component { // theme 적용하기 위해 class로 바꿈
   
   state = {
-    customers: ""
+    customers: "",
+    completed: 0 // 진행 속도 퍼센트지 나타내줄려고
   }
 
   componentDidMount() {
+    this.timer = setInterval(this.progress, 20); // 0.02초마다 progress 함수 실행
     this.callApi()
       .then(res => this.setState({ customers: res }))
       .catch(err => console.log(err));
@@ -65,7 +43,10 @@ class App extends Component { // theme 적용하기 위해 class로 바꿈
     const body = await response.json();
     return body;
   }
-  
+  progress = () => { // 진행속도 나타내주는 이미지
+    const {completed} = this.state;
+    this.setState({ completed: completed >= 100 ? 0 : completed+1});
+  }
   render() { // Class로 바꾸면 render함수로 감싸야한다.
     const { classes } = this.props;
     return (
@@ -95,7 +76,13 @@ class App extends Component { // theme 적용하기 위해 class로 바꿈
                     job={c.job}
                   />
                 )
-              }) : ""
+              }) :
+                // 프로그래스바 설정
+              <TableRow>
+                <TableCell colSpan="6" align="center">
+                  <CircularProgress className={classes.progress} varient="determinate" value={this.state.completed} />
+                </TableCell>
+              </TableRow>
             }
           </TableBody>
         </Table>
