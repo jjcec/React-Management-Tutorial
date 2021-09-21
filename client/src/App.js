@@ -81,13 +81,14 @@ class App extends Component { // theme 적용하기 위해 class로 바꿈
                 <TableCell>생년월일</TableCell>
                 <TableCell>성별</TableCell>
                 <TableCell>직업</TableCell>
+                <TableCell>설정</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {
                 this.state.customers ? this.state.customers.map(c => { // c로 순회, 한줄로도 작성 가능
                   return (
-                    <Customer
+                    <Customer stateRefresh={this.stateRefresh}
                       key={c.id} // map을 사용할 때 key값을 넣어줘야한다.
                       id={c.id}
                       image={c.image}
